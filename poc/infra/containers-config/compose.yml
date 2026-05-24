@@ -1,0 +1,18 @@
+services:
+  app:
+    image: nginx:alpine
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
+        read_only: true
+    environment:
+      APP_NAME: ${APP_NAME}
+      DOMAIN: ${DOMAIN}
+      API_URL: ${API_URL}
+      DB_HOST: ${DB_HOST}
+      REGION: ${REGION}
+      LOG_GROUP: ${LOG_GROUP}
+
+  app2:
+    image: nginx:alpine

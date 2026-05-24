@@ -1,0 +1,43 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import { SITE_TITLE } from '../consts';
+import '@fontsource-variable/fraunces';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogType?: 'website' | 'article';
+  author?: string;
+}
+
+const { title, description, ogType, author } = Astro.props;
+const home = import.meta.env.BASE_URL;
+const rss = `${import.meta.env.BASE_URL}rss.xml`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} ogType={ogType} author={author} />
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <nav>
+          <a href={home} class="brand">
+            <span class="brand-dot" aria-hidden="true"></span>
+            <span>{SITE_TITLE}</span>
+          </a>
+          <div class="site-meta">
+            <span class="site-signature" aria-hidden="true">est. mmxxvi</span>
+            <a href={rss}>RSS</a>
+          </div>
+        </nav>
+      </header>
+      <main class="site-main">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

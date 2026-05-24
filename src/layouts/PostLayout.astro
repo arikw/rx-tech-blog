@@ -1,0 +1,39 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  readingMinutes: number;
+  author: string;
+}
+
+const { title, description, date, tags, readingMinutes, author } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} ogType="article" author={author}>
+  <article class="post">
+    <header class="post-header">
+      <p class="eyebrow">
+        <span class="eyebrow-mark" aria-hidden="true">✦</span>
+        <span>Essay</span>
+        <span class="eyebrow-sep" aria-hidden="true">/</span>
+        <FormattedDate date={date} format="numeric" />
+        <span class="eyebrow-sep" aria-hidden="true">/</span>
+        <span>{readingMinutes} min read</span>
+      </p>
+      <h1>{title}</h1>
+      {tags.length > 0 && (
+        <p class="post-tags">
+          {tags.map((t) => <span class="post-tag">{t}</span>)}
+        </p>
+      )}
+    </header>
+    <div class="prose prose--post">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

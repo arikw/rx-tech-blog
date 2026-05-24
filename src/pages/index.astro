@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { readingTime } from '../utils/reading-time';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <section class="intro">
+    <p class="eyebrow">
+      <span class="eyebrow-mark" aria-hidden="true">✦</span>
+      <span>A field notebook</span>
+    </p>
+    <h1>{SITE_TITLE}</h1>
+  </section>
+
+  <section class="writing">
+    <header class="section-head">
+      <span class="section-label">Writing</span>
+      <span class="section-rule" aria-hidden="true"></span>
+      <span class="section-count">{String(posts.length).padStart(2, '0')}</span>
+    </header>
+
+    <ol class="post-list">
+      {posts.map((post, i) => (
+        <li class="post-list-item">
+          <div class="post-list-aside">
+            <span class="post-list-num">{String(i + 1).padStart(2, '0')}</span>
+            <FormattedDate date={post.data.date} format="numeric" />
+            <span class="post-list-time">{readingTime(post.body)} min</span>
+          </div>
+          <div class="post-list-body">
+            <a href={`${import.meta.env.BASE_URL}posts/${post.data.slug}/`} class="post-list-title">
+              <h2>{post.data.title}</h2>
+              <span class="post-list-arrow" aria-hidden="true">→</span>
+            </a>
+            <p class="post-list-desc">{post.data.description}</p>
+            {post.data.tags.length > 0 && (
+              <p class="post-list-tags">
+                {post.data.tags.slice(0, 5).join(' · ')}
+              </p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+</BaseLayout>

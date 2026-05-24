@@ -1,0 +1,14 @@
+include:
+  - path: infra/containers-config/compose.${COMPOSE_ENV}.yml
+    env_file:
+      - infra/containers-config/.env
+      - infra/containers-config/.env.${COMPOSE_ENV}
+
+services:
+  wrapper-svc:
+    image: nginx:alpine
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
+        read_only: true

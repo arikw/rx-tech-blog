@@ -1,0 +1,14 @@
+include:
+  - compose.yml
+
+services:
+  app:
+    environment:
+      DEPLOY_ENV: staging
+
+  app2:
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
+        read_only: true
