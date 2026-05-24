@@ -4,7 +4,7 @@ Project context for Claude Code working in this repo.
 
 ## What this is
 
-Personal tech blog. Static site built with **Astro 6** (MDX, RSS, sitemap), deployed to **GitHub Pages**, served at `https://wzmn.net/blog/` via an Nginx reverse proxy in front of the domain. Posts are cross-published to dev.to / Hashnode / Medium with canonical URLs pointing back here.
+Personal tech blog. Static site built with **Astro 6** (MDX, RSS, sitemap), deployed to **GitHub Pages**, published at `https://wzmn.net/blog/`. The reverse-proxy topology that makes that URL serve from GitHub Pages is private (see `CLAUDE.local.md`).
 
 ## Stack & layout
 
@@ -12,7 +12,7 @@ Personal tech blog. Static site built with **Astro 6** (MDX, RSS, sitemap), depl
 - Content collection: `src/content/blog/*.{md,mdx}`. Schema in `src/content.config.ts` (Zod): `title`, `date`, `description`, `tags`, `slug`, `draft`.
 - Routing: `src/pages/posts/[...slug].astro` routes on `entry.data.slug` (the schema field, **not** `entry.id`).
 - URL strategy: `astro.config.mjs` sets `site: 'https://wzmn.net'` + `base: '/blog'`. Every internal link, the canonical tag in `src/components/BaseHead.astro`, the RSS feed, and the sitemap all carry the `/blog/` prefix. **Never hardcode `github.io` or strip the base** — the public URL is the source of truth.
-- Cross-post tooling: `scripts/crosspost.mjs` reads a post and emits platform-specific markdown to `out/crosspost/<slug>/` with the right canonical-URL field per platform.
+- `scripts/crosspost.mjs` — utility script that emits platform-specific copies of a post under `out/crosspost/<slug>/` with the right canonical-URL field set. Not part of the build or deploy; runs on demand only.
 
 ## Commands
 
@@ -34,7 +34,7 @@ npm run crosspost -- <slug>
 ## Deployment
 
 - `.github/workflows/deploy.yml` builds on push to `main` and deploys `dist/` to GitHub Pages.
-- Nginx in front of `wzmn.net` rewrites `/blog/*` to `<gh-user>.github.io/rx-tech-blog/`. The actual Nginx config lives in `docs/private/` (gitignored) — see `CLAUDE.local.md` for the topology.
+- The `wzmn.net/blog/` routing topology lives in `docs/private/` (gitignored) — see `CLAUDE.local.md` for details.
 
 ## Where things live that aren't in this file
 
