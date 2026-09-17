@@ -47,3 +47,20 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      # wzmn.net serves this blog at /blog by cloning + building this repo in its
+      # own Cloudflare Pages build. Ping wzmn.net's Pages deploy hook so it
+      # rebuilds and picks up this update immediately (rather than waiting for
+      # wzmn's daily refresh). No-op until the WZMN_DEPLOY_HOOK repo secret is
+      # set (the deploy-hook URL from wzmn.net's Pages project).
+      - name: Trigger wzmn.net rebuild (refresh /blog)
+        env:
+          HOOK: ${{ secrets.WZMN_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$HOOK" ]; then
+            echo 'Pinging wzmn.net deploy hook…'
+            curl -fsS -X POST "$HOOK" > /dev/null
+            echo 'Done.'
+          else
+            echo 'WZMN_DEPLOY_HOOK not set — skipping.'
+          fi
