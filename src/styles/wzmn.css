@@ -1,0 +1,370 @@
+/* wzmn.net look for the blog — the Amstrad home page carried into the posts:
+   light paper for reading, the PC-MM badge's dark navy and light blue, the
+   computer's own font for headings, and screen-lit top and bottom bars.
+   Loaded after global.css; overrides its tokens and the parts that change.
+   The bars, footer and opening match rx-projects' src/themes/wzmn/theme.css.
+
+   Fonts, served from ./fonts:
+   - Amstrad PC 2y: the PC1512's tall 8x16 font, from VileR's Ultimate
+     Oldschool PC Font Pack (int10h.org), CC BY-SA 4.0.
+   - IBM Plex Sans / Mono, SIL Open Font License 1.1 (latin subset). */
+
+@font-face { font-family: 'Amstrad PC 2y'; src: url('./fonts/WebPlus_Amstrad_PC-2y.woff') format('woff'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 400; src: url('./fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 400; font-style: italic; src: url('./fonts/ibm-plex-sans-latin-400-italic.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 500; src: url('./fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 600; src: url('./fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; font-weight: 400; src: url('./fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; font-weight: 500; src: url('./fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2'); font-display: swap; }
+
+/* ---- Tokens ----------------------------------------------------------------
+   The blog's own token names (global.css), set to the wzmn palette. Light
+   only: the same values again inside the dark-scheme query so they win. */
+:root {
+  --dos: 'Amstrad PC 2y', 'IBM Plex Mono', ui-monospace, monospace;
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+  --navy: #1f2b45;
+  --blue: #8fb2d0;
+  --blue-ink: #2e5d86;
+  --paper2: #ece7dc;
+  --phosphor: #c9cfc6;
+  --phosphor-hi: #e3e8df;
+  --glass: #0b0e0c;
+  --on-accent: #f1efe8;
+}
+:root,
+:root:root {
+  color-scheme: light;
+  --max-width: 1100px;
+  --content-width: 68ch;
+  --bg: #f5f2eb;
+  --bg-elevated: #fffdf8;
+  --fg: #1d1c1a;
+  --fg-soft: #2f2d29;
+  --muted: #6b665c;
+  --faint: #9a9488;
+  --border: #d9d3c6;
+  --border-strong: #c9c1b1;
+  --code-bg: var(--paper2);
+  --dot: transparent;
+  --accent: var(--navy);
+  --accent-hover: var(--blue-ink);
+  --accent-soft: rgba(31, 43, 69, 0.08);
+  --selection: rgba(143, 178, 208, 0.45);
+  --font-sans: var(--sans);
+  --font-serif: var(--sans);
+  --font-mono: var(--mono);
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:root {
+    --bg: #f5f2eb; --bg-elevated: #fffdf8; --fg: #1d1c1a; --fg-soft: #2f2d29;
+    --muted: #6b665c; --faint: #9a9488; --border: #d9d3c6; --border-strong: #c9c1b1;
+    --code-bg: var(--paper2); --dot: transparent; --accent: var(--navy);
+    --accent-hover: var(--blue-ink); --accent-soft: rgba(31, 43, 69, 0.08);
+    --selection: rgba(143, 178, 208, 0.45);
+  }
+}
+body {
+  background-image: none;
+  font-family: var(--sans);
+  font-style: normal;
+  border-top: 0;
+  /* The footer strip sits at the bottom of the window on short pages. */
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+body > .page { flex: 1 0 auto; width: 100%; }
+
+/* ---- Top bar: the screen -------------------------------------------------
+   The bar itself is the screen: dark glass across the full width, phosphor
+   text with a soft glow, scanlines (one per pixel row of the 8x16 font at
+   24px: 3px), slightly darker top and bottom edges. Plain CSS. */
+.wz-top {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 80% 160% at 50% 50%, #1a1f1c, var(--glass) 80%);
+  box-shadow: inset 0 6px 10px -6px rgba(0, 0, 0, 0.9), inset 0 -6px 10px -6px rgba(0, 0, 0, 0.9);
+}
+.wz-top::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.3) 2px 3px);
+}
+.wz-bar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--phosphor);
+}
+.wz-path {
+  font: 400 24px/1 var(--dos);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--phosphor-hi);
+  text-shadow: 0 0 5px rgba(214, 222, 208, 0.45);
+}
+/* The path is a breadcrumb: A:\WZMN goes home, \PROJECTS to the list; the
+   last part, this page, isn't a link. On hover they look like the buttons. */
+.wz-path a { color: inherit; text-decoration: none; }
+.wz-path a:hover,
+.wz-path a:focus-visible {
+  background: var(--phosphor);
+  color: var(--glass);
+  box-shadow: 0 0 0 3px var(--phosphor);
+  text-shadow: none;
+  outline: none;
+}
+.wz-caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.14em;
+  background: currentColor;
+  vertical-align: -0.05em;
+  margin-left: 2px;
+  animation: wz-blink 0.32s steps(1) infinite;
+}
+@keyframes wz-blink { 50% { opacity: 0; } }
+.wz-nav { display: flex; flex-wrap: wrap; gap: 2px; }
+.wz-nav a {
+  font: 400 24px/1 var(--dos);
+  color: var(--phosphor);
+  padding: 2px 10px;
+  text-decoration: none;
+  text-shadow: 0 0 5px rgba(214, 222, 208, 0.4);
+}
+.wz-nav a:hover,
+.wz-nav a[aria-current] {
+  background: var(--phosphor);
+  color: var(--glass);
+  text-shadow: none;
+}
+@media (max-width: 620px) {
+  .wz-bar { padding: 12px 20px; row-gap: 8px; }
+  .wz-path, .wz-nav a { font-size: 20px; }
+  /* Wrapped, the links are the next line on the screen, under a faint line
+     across the bar; their text lines up under the path's. */
+  .wz-nav {
+    flex: 1 0 100%;
+    margin: 0 -20px;
+    padding: 8px 10px 0;
+    border-top: 1px solid rgba(201, 207, 198, 0.2);
+  }
+}
+
+/* ---- Page ------------------------------------------------------------------ */
+.page { max-width: 1100px; padding: 0 24px; }
+.site-main { padding-top: 56px; padding-bottom: 0; }
+
+.eyebrow {
+  font: 500 13px/1.3 var(--sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-ink);
+}
+.eyebrow-mark { display: none; }
+.eyebrow-sep { color: var(--faint); }
+
+.intro { max-width: none; margin-bottom: 0; padding-bottom: 34px; border-bottom: 2px solid var(--navy); }
+.intro h1 {
+  font: 400 clamp(42px, 6.5vw, 72px)/1 var(--dos);
+  letter-spacing: 0;
+  color: var(--navy);
+  font-variation-settings: normal;
+}
+
+/* Section label: an inverse-video tab, as on a DOS screen. */
+.section-head { margin: 46px 0 6px; }
+.section-label {
+  background: var(--navy);
+  color: var(--on-accent);
+  font: 400 17px/1 var(--dos);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  padding: 5px 10px 4px;
+}
+.section-count { font: 400 17px/1 var(--dos); color: var(--muted); }
+
+/* The post list: a number in inverse video, the title in navy. */
+.post-list-item { border-bottom: 1px solid var(--border); }
+.post-list-num {
+  display: inline-block;
+  font: 400 26px/1 var(--dos);
+  background: var(--navy);
+  color: var(--on-accent);
+  padding: 6px 10px 5px;
+  align-self: flex-start;
+}
+.post-list-aside { font-family: var(--mono); }
+.post-list-title h2 { font-family: var(--sans); font-weight: 600; color: var(--navy); letter-spacing: 0; font-variation-settings: normal; }
+.post-list-title:hover h2 { color: var(--navy); text-decoration: underline; text-decoration-color: var(--blue); text-underline-offset: 5px; }
+.post-list-arrow { color: var(--blue-ink); }
+.post-list-tags { font-family: var(--mono); }
+
+/* A post. */
+.post-header { border-bottom: 2px solid var(--navy); }
+.post-header h1 {
+  font: 400 clamp(34px, 5vw, 56px)/1.08 var(--dos);
+  letter-spacing: 0;
+  color: var(--navy);
+  font-variation-settings: normal;
+}
+.post-tag { font-family: var(--mono); border-radius: 0; }
+.prose { max-width: var(--content-width); }
+.prose h2, .prose h3 { font-family: var(--dos); font-weight: 400; color: var(--navy); letter-spacing: 0; font-variation-settings: normal; }
+.prose h2 { font-size: 30px; line-height: 1.1; }
+.prose h3 { font-size: 24px; line-height: 1.15; }
+.prose a { color: var(--blue-ink); }
+.prose blockquote { border-left-color: var(--blue); }
+/* No drop cap: the page's headings already carry the computer's font. */
+.prose--post > p:first-of-type::first-letter {
+  font: inherit; float: none; padding: 0; color: inherit;
+}
+
+/* Code: inline on a paper tint; blocks on the navy, in the dark code colours. */
+code { border: 0; }
+pre { background: var(--navy); border: 0; box-shadow: 4px 4px 0 var(--paper2); }
+.astro-code,
+.astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: transparent !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+pre.astro-code { background-color: var(--navy) !important; }
+
+@media (max-width: 720px) {
+  .page { padding: 0 20px; }
+  .site-main { padding-top: 36px; }
+  .post-list-num { font-size: 20px; }
+}
+
+/* The not-found page (404.astro). */
+.nf { display: grid; gap: 22px; padding-bottom: 24px; }
+.nf-screen {
+  position: relative;
+  overflow: hidden;
+  max-width: 640px;
+  padding: 22px 24px 26px;
+  background: radial-gradient(ellipse 90% 140% at 50% 40%, #1a1f1c, var(--glass) 80%);
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.9), 4px 4px 0 var(--paper2);
+  font: 400 22px/1.4 var(--dos);
+  color: var(--phosphor);
+  text-shadow: 0 0 5px rgba(214, 222, 208, 0.4);
+  word-break: break-all;
+}
+.nf-screen > span { display: block; min-height: 1.4em; }
+.nf-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.3) 2px 3px);
+}
+.nf-screen a,
+.nf-screen button {
+  font: inherit;
+  color: var(--phosphor-hi);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  text-shadow: inherit;
+}
+.nf-screen a:hover,
+.nf-screen button:hover,
+.nf-screen a:focus-visible,
+.nf-screen button:focus-visible { background: var(--phosphor); color: var(--glass); text-shadow: none; outline: none; }
+.nf-screen .wz-caret { animation: wz-blink 0.32s steps(1) infinite; }
+.nf p { margin: 0; color: var(--muted); }
+@media (max-width: 620px) { .nf-screen { font-size: 18px; padding: 18px; } }
+
+/* ---- Footer (in BaseLayout) -------------------------------------------------
+   A screen strip like the top bar closes the page. It replaces the
+   blog's old header/footer. */
+.wz-foot {
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(56px, 5vw, 72px);
+  background: radial-gradient(ellipse 80% 160% at 50% 50%, #1a1f1c, var(--glass) 80%);
+  box-shadow: inset 0 6px 10px -6px rgba(0, 0, 0, 0.9), inset 0 -6px 10px -6px rgba(0, 0, 0, 0.9);
+}
+.wz-foot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.3) 2px 3px);
+}
+.wz-foot-bar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  justify-content: space-between;
+  font: 400 20px/1.3 var(--dos);
+  color: var(--phosphor);
+  text-shadow: 0 0 5px rgba(214, 222, 208, 0.4);
+}
+.wz-foot a { color: var(--phosphor-hi); text-decoration: none; }
+.wz-foot a:hover,
+.wz-foot a:focus-visible { background: var(--phosphor); color: var(--glass); text-shadow: none; outline: none; }
+.wz-foot-credit a { color: inherit; text-decoration: underline; text-decoration-color: rgba(201, 207, 198, 0.35); text-underline-offset: 4px; }
+@media (max-width: 620px) {
+  .wz-foot-bar { padding: 12px 20px; font-size: 17px; }
+}
+
+/* ---- Arriving ---------------------------------------------------------------
+   From the computer (html.from-crt, set in Head.astro): it dived into its
+   screen, which went dark, so this page opens from the same darkness and
+   brightens. On every visit: the bar settles into place, the path types
+   itself, and the page rises from under the bar. Everything waits for
+   html.wz-arrive, set when the page is actually shown, so a page built ahead
+   in the background (prerender) doesn't play its opening unseen. */
+html.from-crt body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: var(--glass);
+  opacity: var(--dark-from, 1);
+}
+html.wz-arrive.from-crt body::before { animation: wz-undark 0.55s ease-out both; }
+/* --dark-from: how dark the computer's dive had got when it left. */
+@keyframes wz-undark { from { opacity: var(--dark-from, 1); } to { opacity: 0; visibility: hidden; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html.from-crt body::before { display: none; }
+  .wz-caret { animation: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* (.wz-js is set by Head.astro, so without scripts nothing stays hidden.) */
+  html.wz-js:not(.wz-arrive) .wz-bar,
+  html.wz-js:not(.wz-arrive) .page { opacity: 0; }
+  html.wz-arrive .wz-bar { animation: wz-settle 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  html.wz-arrive .wz-path { clip-path: inset(0 100% 0 0); animation: wz-type 0.5s steps(20, end) 0.15s forwards; }
+  html.wz-arrive .page { animation: wz-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both; }
+  html.wz-arrive.from-crt .wz-bar { animation-delay: 0.15s; }
+  html.wz-arrive.from-crt .wz-path { animation-delay: 0.35s; }
+  html.wz-arrive.from-crt .page { animation-delay: 0.25s; }
+}
+@keyframes wz-type { to { clip-path: inset(0 0 0 0); } }
+@keyframes wz-settle { from { transform: scale(1.06); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes wz-rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }

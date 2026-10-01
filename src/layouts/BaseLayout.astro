@@ -1,8 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
-import { SITE_TITLE } from '../consts';
-import '@fontsource-variable/fraunces';
 import '../styles/global.css';
+import '../styles/wzmn.css';
 
 interface Props {
   title: string;
@@ -12,32 +12,96 @@ interface Props {
 }
 
 const { title, description, ogType, author } = Astro.props;
-const home = import.meta.env.BASE_URL;
-const rss = `${import.meta.env.BASE_URL}rss.xml`;
+const base = import.meta.env.BASE_URL;
+const rss = `${base}rss.xml`;
+
+// The top bar's path, in the computer's own words: A:\WZMN\BLOG on the list,
+// A:\WZMN\BLOG\COMPOSE~1.TXT on a post (its slug as a DOS 8.3 file name).
+// The site's own pages are linked by path, so the bars work on any
+// deployment of the site (wzmn.net, or a Cloudflare preview).
+const rest = Astro.url.pathname.startsWith(base) ? Astro.url.pathname.slice(base.length).replace(/\/$/, '') : '';
+const postSlug = rest.startsWith('posts/') ? rest.slice('posts/'.length) : '';
+function dosName(slug: string): string {
+  const name = slug.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+  return (name.length <= 8 ? name : `${name.slice(0, 6)}~1`) + '.TXT';
+}
+
+// Footer: the post count, and the newest post's date (DD-MM-YY, as the
+// Amstrad's DIR listing printed dates).
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const newest = new Date(Math.max(...posts.map((p) => p.data.date.valueOf()), 0) || Date.now());
+const pad = (n: number) => String(n).padStart(2, '0');
+const newestDos = `${pad(newest.getUTCDate())}-${pad(newest.getUTCMonth() + 1)}-${pad(newest.getUTCFullYear() % 100)}`;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead title={title} description={description} ogType={ogType} author={author} />
+    <script is:inline>
+      // Before the first paint: mark that scripts run (.wz-js, so the opening
+      // may hide the page until it starts), and coming from the computer (its
+      // dive ended in the dark), or being built ahead in the background, start
+      // dark (.from-crt) and brighten when shown.
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('wz-js');
+        try {
+          if (document.prerendering || sessionStorage.getItem('wzmn-from-crt')) root.classList.add('from-crt');
+          var d = parseFloat(sessionStorage.getItem('wzmn-dark'));
+          if (d >= 0 && d <= 1) root.style.setProperty('--dark-from', String(Math.max(0.5, d)));
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <div class="page">
-      <header class="site-header">
-        <nav>
-          <a href={home} class="brand">
-            <span class="brand-dot" aria-hidden="true"></span>
-            <span>{SITE_TITLE}</span>
-          </a>
-          <div class="site-meta">
-            <span class="site-signature" aria-hidden="true">est. mmxxvi</span>
-            <a href={rss}>RSS</a>
-          </div>
+    <header class="wz-top">
+      <div class="wz-bar">
+        {/* One line on purpose: any whitespace between the parts shows as a gap. */}
+        <div class="wz-path"><a href="/" title="Home: the Amstrad">A:\WZMN</a>{postSlug ? <><a href={base} title="All posts">\BLOG</a><span>\{dosName(postSlug)}</span></> : <span>\BLOG</span>}&gt;<span class="wz-caret" aria-hidden="true"></span></div>
+        <nav class="wz-nav" aria-label="Main">
+          <a href="/projects/">Projects</a>
+          <a href={base} aria-current={postSlug ? undefined : 'page'}>Blog</a>
+          <a href="https://contact.wzmn.net/" target="_blank" rel="noopener">Contact</a>
         </nav>
-      </header>
+      </div>
+    </header>
+    <div class="page">
       <main class="site-main">
         <slot />
       </main>
     </div>
+    <footer class="wz-foot">
+      <div class="wz-foot-bar">
+        <span>{posts.length} Post(s) · Updated <time datetime={newest.toISOString()}>{newestDos}</time> · (c){newest.getUTCFullYear()} <a href="/">Arik</a></span>
+        <span class="wz-foot-credit"><a href={rss}>RSS</a></span>
+      </div>
+    </footer>
+    <script>
+      // The opening starts when the page is actually shown: now, or, for a
+      // page built ahead in the background (prerender), when it's switched to.
+      const root = document.documentElement;
+      // The computer is the site's home page (/), or one of its drafts.
+      function fromComputer() {
+        try {
+          const ref = new URL(document.referrer);
+          return ref.origin === location.origin && (ref.pathname === '/' || ref.pathname.startsWith('/drafts/crt'));
+        } catch (e) {
+          return false;
+        }
+      }
+      function arrive() {
+        try {
+          if (sessionStorage.getItem('wzmn-from-crt')) root.classList.add('from-crt');
+          else if (!fromComputer()) root.classList.remove('from-crt');
+          sessionStorage.removeItem('wzmn-from-crt');
+          sessionStorage.removeItem('wzmn-dark');
+        } catch (e) {}
+        root.classList.add('wz-arrive');
+      }
+      const doc = document as Document & { prerendering?: boolean };
+      if (doc.prerendering) document.addEventListener('prerenderingchange', arrive, { once: true });
+      else arrive();
+    </script>
   </body>
 </html>
