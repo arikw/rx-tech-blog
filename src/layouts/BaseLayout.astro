@@ -61,6 +61,7 @@ const newestDos = `${pad(newest.getUTCDate())}-${pad(newest.getUTCMonth() + 1)}-
         {/* One line on purpose: any whitespace between the parts shows as a gap. */}
         <div class="wz-path"><a href="/" title="Home: the Amstrad">A:\WZMN</a>{postSlug ? <><a href={base} title="All posts">\BLOG</a><span>\{dosName(postSlug)}</span></> : <span>\BLOG</span>}&gt;<span class="wz-caret" aria-hidden="true"></span></div>
         <nav class="wz-nav" aria-label="Main">
+          <a href="/">Home</a>
           <a href="/projects/">Projects</a>
           <a href={base} aria-current={postSlug ? undefined : 'page'}>Blog</a>
           <a href="https://contact.wzmn.net/" target="_blank" rel="noopener">Contact</a>
