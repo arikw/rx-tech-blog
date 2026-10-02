@@ -15,8 +15,14 @@ const base = import.meta.env.BASE_URL;
     <p>That page doesn't exist, or it moved. See the <a href={base}>list of posts</a>.</p>
   </section>
   <script>
+    // The missing address, as plain text (textContent, never HTML), so
+    // nothing in it can run. A malformed %-escape keeps the raw path; a very
+    // long one is cut.
     const el = document.getElementById('nf-path');
-    const rest = decodeURIComponent(location.pathname).replace(/^\/blog\/?/, '').replace(/\/$/, '');
+    let path = location.pathname;
+    try { path = decodeURIComponent(path); } catch (e) {}
+    let rest = path.replace(/^\/blog\/?/, '').replace(/\/$/, '');
+    if (rest.length > 120) rest = rest.slice(0, 120) + '...';
     if (el && rest) el.textContent = '\\' + rest.toUpperCase().replace(/\//g, '\\');
   </script>
 </BaseLayout>
