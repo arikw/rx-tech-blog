@@ -6,9 +6,11 @@ interface Props {
   description: string;
   ogType?: 'website' | 'article';
   author?: string;
+  /** The robots meta tag; the 404 page passes 'noindex'. */
+  robots?: string;
 }
 
-const { title, description, ogType = 'website', author = 'Arik W.' } = Astro.props;
+const { title, description, ogType = 'website', author = 'Arik W.', robots = 'index,follow' } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const rssURL = new URL(`${import.meta.env.BASE_URL}rss.xml`, Astro.site);
@@ -39,4 +41,4 @@ const rssURL = new URL(`${import.meta.env.BASE_URL}rss.xml`, Astro.site);
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 
-<meta name="robots" content="index,follow" />
+<meta name="robots" content={robots} />

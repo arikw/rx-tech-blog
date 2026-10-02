@@ -9,9 +9,10 @@ interface Props {
   description: string;
   ogType?: 'website' | 'article';
   author?: string;
+  robots?: string;
 }
 
-const { title, description, ogType, author } = Astro.props;
+const { title, description, ogType, author, robots } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const rss = `${base}rss.xml`;
 
@@ -37,7 +38,7 @@ const newestDos = `${pad(newest.getUTCDate())}-${pad(newest.getUTCMonth() + 1)}-
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} ogType={ogType} author={author} />
+    <BaseHead title={title} description={description} ogType={ogType} author={author} robots={robots} />
     <script is:inline>
       // Before the first paint: mark that scripts run (.wz-js, so the opening
       // may hide the page until it starts), and coming from the computer (its
