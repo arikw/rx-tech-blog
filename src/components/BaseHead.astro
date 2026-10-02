@@ -12,7 +12,6 @@ const { title, description, ogType = 'website', author = 'Arik W.' } = Astro.pro
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const rssURL = new URL(`${import.meta.env.BASE_URL}rss.xml`, Astro.site);
-const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 ---
 
 <meta charset="utf-8" />
@@ -21,7 +20,10 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 
 <link rel="canonical" href={canonicalURL} />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={rssURL} />
-<link rel="icon" type="image/svg+xml" href={faviconURL} />
+<!-- The site-wide icon set at wzmn.net's root (the A>_ prompt). -->
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 <title>{title}</title>
 <meta name="description" content={description} />
