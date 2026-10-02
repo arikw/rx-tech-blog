@@ -1,8 +1,7 @@
 ---
-// Not found, the way the Amstrad said it: TYPE of a file that isn't there,
-// then DOS's own question. Abort goes to the post list, Retry reloads, Fail
-// goes back. The requested path is filled in on the page (it's one static
-// file for every missing address).
+// Not found, the way the Amstrad said it: TYPE of a file that isn't there.
+// The requested path is filled in on the page (it's one static file for
+// every missing address).
 import BaseLayout from '../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL;
 ---
@@ -12,18 +11,12 @@ const base = import.meta.env.BASE_URL;
     <div class="nf-screen">
       <span>A:\WZMN\BLOG&gt;TYPE <span id="nf-path">\FILE.TXT</span></span>
       <span>File not found</span>
-      <span></span>
-      <span><a href={base}>Abort</a>, <button type="button" id="nf-retry">Retry</button>, <button type="button" id="nf-fail">Fail</button>?<span class="wz-caret" aria-hidden="true"></span></span>
     </div>
-    <p>That page doesn't exist, or it moved. Abort goes to the list of posts.</p>
+    <p>That page doesn't exist, or it moved. See the <a href={base}>list of posts</a>.</p>
   </section>
   <script>
     const el = document.getElementById('nf-path');
     const rest = decodeURIComponent(location.pathname).replace(/^\/blog\/?/, '').replace(/\/$/, '');
     if (el && rest) el.textContent = '\\' + rest.toUpperCase().replace(/\//g, '\\');
-    document.getElementById('nf-retry')?.addEventListener('click', () => location.reload());
-    document.getElementById('nf-fail')?.addEventListener('click', () => {
-      if (history.length > 1) history.back(); else location.href = '/';
-    });
   </script>
 </BaseLayout>
