@@ -33,25 +33,27 @@
   --navy: #1f2b45;
   --blue: #8fb2d0;
   --blue-ink: #2e5d86;
-  --paper2: #ece7dc;
+  --paper2: #cdd0c9;
   --phosphor: #c9cfc6;
   --phosphor-hi: #e3e8df;
   --glass: #0b0e0c;
-  --on-accent: #f1efe8;
+  --on-accent: #f2f3ef;
 }
 :root,
 :root:root {
   color-scheme: light;
   --max-width: 1100px;
   --content-width: 68ch;
-  --bg: #f5f2eb;
-  --bg-elevated: #fffdf8;
-  --fg: #1d1c1a;
-  --fg-soft: #2f2d29;
-  --muted: #6b665c;
-  --faint: #9a9488;
-  --border: #d9d3c6;
-  --border-strong: #c9c1b1;
+  /* The Amstrad PC1512's case: a cool light grey (not the warm cream that
+     reads as a generic AI-made page). Same palette as /projects. */
+  --bg: #e3e4df;
+  --bg-elevated: #f2f3ef;
+  --fg: #1b1d1c;
+  --fg-soft: #2c2f2d;
+  --muted: #5a5f58;
+  --faint: #8b9089;
+  --border: #c3c6be;
+  --border-strong: #b1b5ac;
   --code-bg: var(--paper2);
   --dot: transparent;
   --accent: var(--navy);
@@ -67,8 +69,8 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:root {
-    --bg: #f5f2eb; --bg-elevated: #fffdf8; --fg: #1d1c1a; --fg-soft: #2f2d29;
-    --muted: #6b665c; --faint: #9a9488; --border: #d9d3c6; --border-strong: #c9c1b1;
+    --bg: #e3e4df; --bg-elevated: #f2f3ef; --fg: #1b1d1c; --fg-soft: #2c2f2d;
+    --muted: #5a5f58; --faint: #8b9089; --border: #c3c6be; --border-strong: #b1b5ac;
     --code-bg: var(--paper2); --dot: transparent; --accent: var(--navy);
     --accent-hover: var(--blue-ink); --accent-soft: rgba(31, 43, 69, 0.08);
     --selection: rgba(143, 178, 208, 0.45);
